@@ -90,7 +90,7 @@ function move(){
     //snake.pop();
 
     if (head.x == food.x && head.y == food.y){
-        playBeep();
+        playBeep(440);
         food = generateFood();
         increaseSpeed();
         clearInterval(gameInterval);
@@ -176,6 +176,9 @@ function checkCollision(){
 }
 
 function gameOver(){
+    playBeep(440);
+    playBeep(340);
+    playBeep(240);
     alert('You crashed. Game over');
     resetGame();
 }
@@ -218,7 +221,7 @@ function initAudioContext() {
     }
 }
 
-function playBeep() {
+function playBeep(frequency) {
     initAudioContext(); // Initialize AudioContext if not already done
 
     // Create an oscillator
@@ -231,7 +234,7 @@ function playBeep() {
     oscillator.type = 'sine';
 
     // Set the frequency of the oscillator
-    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // 440 Hz for A4 pitch
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // 440 Hz for A4 pitch
 
     // Start and stop the oscillator to generate a short beep
     oscillator.start();
