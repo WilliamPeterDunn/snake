@@ -15,6 +15,9 @@ let gameInterval;
 let gameSpeedDelay = 200;
 let gameStarted = false;
 
+//SFX variables
+let audioContext;
+
 // Draw the map, snake, food
 function draw() {
     board.innerHTML = '';
@@ -87,6 +90,7 @@ function move(){
     //snake.pop();
 
     if (head.x == food.x && head.y == food.y){
+        playBeep();
         food = generateFood();
         increaseSpeed();
         clearInterval(gameInterval);
@@ -166,7 +170,7 @@ function checkCollision(){
 
     for (let i = 1; i < snake.length; i++){
         if (head.x === snake[i].x && head.y === snake[i].y){
-            gameOver();
+        gameOver();
         }
     }
 }
@@ -207,3 +211,34 @@ function updateHighScore(){
     }
     highScoreText.style.display = 'block';
 }
+
+function initAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+function playBeep() {
+    initAudioContext(); // Initialize AudioContext if not already done
+
+    // Create an oscillator
+    const oscillator = audioContext.createOscillator();
+
+    // Connect the oscillator to the audio context's destination (speakers)
+    oscillator.connect(audioContext.destination);
+
+    // Set the type of oscillator (sine wave for a simple beep)
+    oscillator.type = 'sine';
+
+    // Set the frequency of the oscillator
+    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // 440 Hz for A4 pitch
+
+    // Start and stop the oscillator to generate a short beep
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Attach click event to the audio control button to enable audio
+const enableAudioButton = document.getElementById("enableAudioButton");
+enableAudioButton.addEventListener("click", initAudioContext);
+
